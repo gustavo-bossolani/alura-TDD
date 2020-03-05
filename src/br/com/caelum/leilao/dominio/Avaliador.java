@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Avaliador {
 
@@ -25,10 +26,12 @@ public class Avaliador {
 	}
 	
 	public void recuperaMaiores(Leilao leilao){
-		this.maiores = 
-				new ArrayList<>
-		(leilao.getLances().subList(0, maiores.size() > 3 ? 3 : leilao.getLances().size()));
-		Collections.sort(this.maiores, Comparator.comparing(Lance :: getValor));
+		
+		List<Lance> lances = new ArrayList<>(leilao.getLances());
+		Collections.sort(lances, Comparator.comparing(Lance :: getValor).reversed());
+		this.maiores  = lances.subList(0, leilao.getLances().size() > 3 ? 3 : leilao.getLances().size());
+		
+//		this.maiores.stream().sorted(Comparator.comparing(Lance :: getValor)).collect(Collectors.toList());
 	}
 	
 	public double calculaMedia(double total, int dividendo) {
@@ -46,5 +49,9 @@ public class Avaliador {
 	}
 	public double getMedia() {
 		return media;
+	}
+	
+	public List<Lance> getTresMaiores() {
+		return maiores;
 	}
 }
