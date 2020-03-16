@@ -1,4 +1,4 @@
-package br.com.caelum.leilao.tests;
+package br.com.caelum.tests;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +14,7 @@ import br.com.caelum.leilao.dominio.Usuario;
 
 public class AvaliadorTest {
 
-	private final double DELTA = 0.0001;
+	private final double DELTA = 0.00001;
 
 
 	@Test
@@ -137,18 +137,51 @@ public class AvaliadorTest {
 
 		List<Lance> lancesEsperados = avaliador.getTresMaiores();
 
-		System.out.println(lancesEsperados);
-		
 		int quantidadeLancesEsperado = 3;
 		double maiorLanceEsperado = 4.0;
 		double segundoMaiorLanceEsperado = 3.0;
 		double terceiroMaiorLanceEsperado = 2.5;
 
-		
-
-		assertEquals(lancesEsperados.size(), quantidadeLancesEsperado, DELTA);
+		assertEquals(quantidadeLancesEsperado, lancesEsperados.size(), DELTA);
 		assertEquals(maiorLanceEsperado, lancesEsperados.get(0).getValor(),DELTA);
 		assertEquals(segundoMaiorLanceEsperado , lancesEsperados.get(1).getValor(),DELTA);
 		assertEquals(terceiroMaiorLanceEsperado , lancesEsperados.get(2).getValor(),DELTA);
 	}
+
+	@Test
+	public void avaliaApenasDoisLances() {
+		Usuario gustavo = new Usuario("Gustavo");
+		Usuario ciclano= new Usuario("Ciclano");
+
+		Leilao leilao = new Leilao("CELULAR - NOVO");
+		leilao.propoe(new Lance(ciclano, 200.0));
+		leilao.propoe(new Lance(gustavo, 1500.0));
+
+		Avaliador avaliador = new Avaliador();
+		avaliador.avalia(leilao);
+
+		List<Lance> maiores = avaliador.getTresMaiores();
+
+		int quantidadeLancesEsperado = 2;
+		double maiorLance = 1500.0;
+		double segundoMaiorLance = 200.0;
+
+		assertEquals(quantidadeLancesEsperado, maiores.size(), DELTA);
+		assertEquals(maiorLance, maiores.get(0).getValor(), DELTA);
+		assertEquals(segundoMaiorLance, maiores.get(1).getValor(), DELTA);
+	}
+
+	@Test
+	public void avaliaSemLances() {
+		Leilao leilao = new Leilao("CAVALO DE RAÇA");
+		Avaliador avaliador = new Avaliador();
+		avaliador.avalia(leilao);
+
+		List<Lance> maiores = avaliador.getTresMaiores();
+
+		int quantidadeLances = 0;
+
+		assertEquals(quantidadeLances, maiores.size() ,DELTA);
+	}
+
 }
